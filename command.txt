@@ -42,4 +42,19 @@ Add this line at the bottom:
 
 helm version
 helm create go-web-app-chart
+helm install go-web-app ./go-web-app-chart
 
+CI (Github actions): Multiple stages -
+     build and unit test
+     static code analysis
+     docker image & push
+     update helm
+CD (argoCD) : pull helm chart and deploy it on k8s cluster
+
+make CICD.yml for CI
+
+argoCD:
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl get svc argocd-server -n argocd
