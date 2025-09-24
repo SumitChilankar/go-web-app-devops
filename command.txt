@@ -40,4 +40,6 @@ Address: 127.0.0.1
 Add this line at the bottom:
 127.0.0.1 go-web-app.local
 
+helm version
+helm create go-web-app-chart
 
