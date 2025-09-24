@@ -1,3 +1,43 @@
 docker build -t sheessshh/go-web-app:v1 .
 docker run -p 8080:8080 -it sheessshh/go-web-app:v1
 docker push sheessshh/go-web-app:v1
+
+kubectl apply -f k8s/manifest/deployment.yml
+kubectl apply -f k8s/manifest/service.yml
+kubectl apply -f k8s/manifest/ingress.yml 
+
+kubectl apply -f k8s/manifest/Deployment.yml
+deployment.apps/go-web-app created
+➜  go-web-app-devops git:(main) ✗ kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+go-web-app-7b86bd4ffc-r65hp   1/1     Running   0          31s
+
+➜  go-web-app-devops git:(main) ✗ kubectl apply -f k8s/manifest/service.yml
+service/go-web-app-service created
+➜  go-web-app-devops git:(main) ✗ kubectl get service
+NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+go-web-app-service   LoadBalancer   10.96.229.253   <pending>     80:31240/TCP   5s
+kubernetes           ClusterIP      10.96.0.1       <none>        443/TCP        6d18h
+
+➜  go-web-app-devops git:(main) ✗ kubectl apply -f k8s/manifest/ingress.yml 
+ingress.networking.k8s.io/go-web-app-ingress created
+➜  go-web-app-devops git:(main) ✗ kubectl get ingress
+NAME                 CLASS   HOSTS              ADDRESS   PORTS   AGE
+go-web-app-ingress   nginx   go-web-app.local             80      9s
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/kind/deploy.yaml
+kubectl get pods -n ingress-nginx
+kubectl label node k8s-cluster-worker ingress-ready=true
+
+nslookup localhost 
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Name:	localhost
+Address: 127.0.0.1
+
+➜  go-web-app-devops git:(main) ✗ sudo vim /etc/hosts      
+Add this line at the bottom:
+127.0.0.1 go-web-app.local
+
+
